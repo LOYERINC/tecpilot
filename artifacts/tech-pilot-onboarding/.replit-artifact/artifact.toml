@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Tech Pilot Classes"
+description = "A mobile-first four-step onboarding wizard for learners joining Tech Pilot Classes, with track selection, contact details, and a WhatsApp group confirmation."
+version = "1.0.0"
+id = "artifacts/tech-pilot-onboarding"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23843
+
+[services.development]
+run = "pnpm --filter @workspace/tech-pilot-onboarding run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/tech-pilot-onboarding", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/tech-pilot-onboarding/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23843"
+BASE_PATH = "/"
