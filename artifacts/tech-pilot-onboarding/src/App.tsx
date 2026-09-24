@@ -2,18 +2,20 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode, type RefOb
 import {
   ArrowLeft,
   ArrowRight,
-  BarChart3,
+  ArrowSquareOut,
+  BookOpen,
+  CaretRight,
+  ChatCircle,
+  ChartBar,
   Check,
-  ChevronRight,
-  Code2,
+  Code,
   Database,
-  ExternalLink,
-  MessageCircle,
   Phone,
-  Server,
+  StackSimple,
   ShieldCheck,
-  UserRound,
-} from 'lucide-react';
+  User,
+} from '@phosphor-icons/react';
+import type { Icon as PhosphorIcon } from '@phosphor-icons/react';
 
 // Replace this one placeholder with the supplied WhatsApp invite URL.
 const WHATSAPP_INVITE_URL = 'https://chat.whatsapp.com/REPLACE_WITH_INVITE';
@@ -23,19 +25,19 @@ const tracks = [
     id: 'data-analysis',
     label: 'Data Analysis',
     description: 'Turn raw information into clear decisions.',
-    icon: BarChart3,
+    icon: ChartBar,
   },
   {
     id: 'frontend',
     label: 'Web Development (Frontend)',
     description: 'Build the interfaces people use every day.',
-    icon: Code2,
+    icon: Code,
   },
   {
     id: 'backend',
     label: 'Web Development (Backend)',
     description: 'Create the systems that power great products.',
-    icon: Server,
+    icon: StackSimple,
   },
 ] as const;
 
@@ -46,14 +48,10 @@ function OpenBookMark({ size = 42 }: { size?: number }) {
   return (
     <span
       aria-hidden="true"
-      className="relative inline-flex shrink-0 items-center justify-center rounded-[13px] bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] shadow-[0_8px_18px_hsl(353_78%_56%_/_0.22)]"
+      className="relative inline-flex shrink-0 items-center justify-center rounded-[13px] bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))]"
       style={{ width: size, height: size }}
     >
-      <svg width={size * 0.62} height={size * 0.62} viewBox="0 0 30 26" fill="none">
-        <path d="M14.6 4.7C11.7 2.1 7.6 1.5 3.8 2.9v16.6c3.8-1.4 7.9-.8 10.8 2.1V4.7Z" fill="currentColor" />
-        <path d="M15.4 4.7c2.9-2.6 7-3.2 10.8-1.8v16.6c-3.8-1.4-7.9-.8-10.8 2.1V4.7Z" fill="currentColor" opacity=".8" />
-        <path d="M15 5v16.9" stroke="hsl(353 78% 56%)" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
+      <BookOpen size={size * 0.62} weight="fill" />
     </span>
   );
 }
@@ -139,7 +137,7 @@ function Field({
   placeholder: string;
   type?: string;
   autoComplete?: string;
-  icon: typeof UserRound;
+  icon: PhosphorIcon;
   error?: string;
 }) {
   return (
@@ -320,7 +318,7 @@ function App() {
                   className="action-button focus-ring mt-8 inline-flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-[hsl(var(--primary))] px-6 text-base font-bold text-[hsl(var(--primary-foreground))] sm:w-auto sm:min-w-[170px]"
                 >
                   Next
-                  <ChevronRight size={18} aria-hidden="true" />
+                  <CaretRight size={18} aria-hidden="true" />
                 </button>
               </div>
             ) : null}
@@ -333,7 +331,7 @@ function App() {
                   </p>
                 </ScreenHeading>
                 <form onSubmit={handleContactSubmit} noValidate className="space-y-5">
-                  <Field id="full-name" label="Full Name" value={fullName} onChange={setFullName} placeholder="e.g. Ada Okafor" autoComplete="name" icon={UserRound} error={errors.fullName} />
+                  <Field id="full-name" label="Full Name" value={fullName} onChange={setFullName} placeholder="e.g. Ada Okafor" autoComplete="name" icon={User} error={errors.fullName} />
                   <Field id="whatsapp-number" label="WhatsApp Number" value={whatsapp} onChange={setWhatsapp} placeholder="e.g. +234 801 234 5678" type="tel" autoComplete="tel" icon={Phone} error={errors.whatsapp} />
                   <button
                     type="submit"
@@ -349,8 +347,8 @@ function App() {
 
             {step === 3 ? (
               <div>
-                <div className="mb-7 flex h-16 w-16 items-center justify-center rounded-[20px] bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] shadow-[0_12px_22px_hsl(353_78%_56%_/_0.22)]">
-                  <MessageCircle size={30} strokeWidth={2.3} aria-hidden="true" />
+                <div className="mb-7 flex h-16 w-16 items-center justify-center rounded-[20px] bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))]">
+                  <ChatCircle size={30} aria-hidden="true" />
                 </div>
                 <ScreenHeading headingRef={headingRef} eyebrow="Step 4 / You're registered" title="You're in!">
                   <p className="mt-5 max-w-[540px] text-lg leading-8 text-[hsl(var(--muted-foreground))]">
@@ -365,7 +363,7 @@ function App() {
                   className="action-button focus-ring inline-flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-[hsl(var(--secondary))] px-6 text-base font-bold text-[hsl(var(--secondary-foreground))] shadow-[0_12px_22px_hsl(353_78%_56%_/_0.2)] sm:w-auto sm:min-w-[245px]"
                 >
                   Join WhatsApp Group
-                  <ExternalLink size={17} aria-hidden="true" />
+                  <ArrowSquareOut size={17} aria-hidden="true" />
                 </a>
                 <div className="mt-8 flex max-w-[500px] items-start gap-3 rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4">
                   <Database size={18} className="mt-0.5 shrink-0 text-[hsl(var(--secondary))]" aria-hidden="true" />

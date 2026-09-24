@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -113,9 +113,9 @@
   --chart-3: 37 94% 67%;
   --chart-4: 166 44% 42%;
   --chart-5: 228 31% 70%;
-  --app-font-sans: 'DM Sans', sans-serif;
+  --app-font-sans: 'Bricolage Grotesque', sans-serif;
   --app-font-serif: Georgia, serif;
-  --app-font-mono: 'Space Grotesk', monospace;
+  --app-font-mono: ui-monospace, monospace;
   --radius: 1rem;
   --shadow-2xs: 0 1px 2px hsl(231 54% 22% / 0.04);
   --shadow-xs: 0 2px 5px hsl(231 54% 22% / 0.05);
@@ -266,7 +266,7 @@
 
 @layer utilities {
   .font-display {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Bricolage Grotesque', sans-serif;
   }
 
   .focus-ring:focus-visible {
@@ -315,10 +315,6 @@
 
 .action-button:active:not(:disabled) {
   transform: translateY(0);
-}
-
-.option-card[aria-checked='true'] {
-  box-shadow: 0 0 0 3px hsl(353 78% 56% / 0.18), 0 14px 30px hsl(231 54% 22% / 0.1);
 }
 
 @keyframes panel-in {
