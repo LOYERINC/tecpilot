@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: courses
+    description: Course catalog and student learning access
 paths:
   /healthz:
     get:
@@ -24,8 +26,145 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /courses:
+    get:
+      operationId: getCourses
+      tags: [courses]
+      summary: List available learning tracks
+      responses:
+        "200":
+          description: Available courses and current schedule/link status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseListResponse"
+  /enrollments/whatsapp:
+    post:
+      operationId: createWhatsAppEnrollment
+      tags: [courses]
+      summary: Save a WhatsApp-path enrollment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WhatsAppEnrollmentInput"
+      responses:
+        "201":
+          description: Enrollment saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentEnrollment"
+  /students/me/enrollment:
+    get:
+      operationId: getMyEnrollment
+      tags: [courses]
+      summary: Get the signed-in student's course enrollment
+      responses:
+        "200":
+          description: Current student's enrollment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentEnrollment"
+        "401":
+          description: Sign-in required
+        "404":
+          description: No course enrollment exists yet
+    put:
+      operationId: saveMyEnrollment
+      tags: [courses]
+      summary: Save or update the signed-in student's course enrollment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentEnrollmentInput"
+      responses:
+        "200":
+          description: Enrollment saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentEnrollment"
 components:
   schemas:
+    CourseId:
+      type: string
+      enum:
+        - data-analysis
+        - frontend
+        - backend
+        - cybersecurity
+        - virtual-assistant
+    Course:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/CourseId"
+        name:
+          type: string
+        summary:
+          type: string
+        schedule:
+          type: string
+        classLink:
+          type: ["string", "null"]
+        whatsappLink:
+          type: ["string", "null"]
+      required: [id, name, summary, schedule, classLink, whatsappLink]
+    CourseListResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/Course"
+    WhatsAppEnrollmentInput:
+      type: object
+      properties:
+        courseId:
+          $ref: "#/components/schemas/CourseId"
+        fullName:
+          type: string
+          minLength: 2
+          maxLength: 120
+        whatsappNumber:
+          type: string
+          minLength: 10
+          maxLength: 32
+      required: [courseId, fullName, whatsappNumber]
+    StudentEnrollmentInput:
+      type: object
+      properties:
+        courseId:
+          $ref: "#/components/schemas/CourseId"
+        fullName:
+          type: string
+          minLength: 2
+          maxLength: 120
+        whatsappNumber:
+          type: string
+          minLength: 10
+          maxLength: 32
+      required: [courseId, fullName, whatsappNumber]
+    StudentEnrollment:
+      type: object
+      properties:
+        id:
+          type: integer
+        courseId:
+          $ref: "#/components/schemas/CourseId"
+        fullName:
+          type: string
+        whatsappNumber:
+          type: string
+        accessMode:
+          type: string
+          enum: [whatsapp, portal]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, courseId, fullName, whatsappNumber, accessMode, createdAt]
     HealthStatus:
       type: object
       properties:
