@@ -1,0 +1,3 @@
+[build]
+  command = "PORT=4173 BASE_PATH=/ pnpm --filter @workspace/tech-pilot-onboarding build"
+  publish = "artifacts/tech-pilot-onboarding/dist/public"
