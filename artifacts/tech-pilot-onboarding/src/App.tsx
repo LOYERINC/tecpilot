@@ -7,6 +7,7 @@ import {
   BookOpen,
   CalendarBlank,
   CaretDown,
+  Check,
   CheckCircle,
   CircleNotch,
   ClipboardText,
@@ -18,6 +19,7 @@ import {
   Exam,
   SquaresFour,
   Lifebuoy,
+  Lightbulb,
   LockKey,
   MapPin,
   SignOut,
@@ -79,14 +81,6 @@ const fallbackCourses: Course[] = [
   { id: 'cybersecurity', name: 'Cybersecurity', summary: 'Build safer digital habits and systems.', schedule: 'To Be Decided', classLink: null, whatsappLink: null },
   { id: 'virtual-assistant', name: 'Virtual Assistant', summary: 'Learn practical tools for remote work.', schedule: 'To Be Decided', classLink: null, whatsappLink: null },
 ];
-
-const coursePhotos: Record<CourseId, string> = {
-  'data-analysis': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80',
-  frontend: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80',
-  backend: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
-  cybersecurity: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=900&q=80',
-  'virtual-assistant': 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80',
-};
 
 const communityWhatsappHref = `https://wa.me/?text=${encodeURIComponent('Hi Tech Pilot, please share the student community invite link with me.')}`;
 
@@ -153,11 +147,12 @@ function AccountMenu({ name }: { name: string }) {
   );
 }
 
-function PageHeader({ signedIn = false, accountName = 'Jonathan' }: { signedIn?: boolean; accountName?: string }) {
+function PageHeader({ signedIn = false, accountName = 'Jonathan', devSkip }: { signedIn?: boolean; accountName?: string; devSkip?: () => void }) {
   return (
     <header className="site-header">
       <Logo />
       <nav className="header-actions" aria-label="Primary navigation">
+        {devSkip ? <button type="button" className="dev-skip-button" onClick={devSkip}>Skip screen <span>DEV</span></button> : null}
         {signedIn ? <AccountMenu name={accountName} /> : <Link href="/sign-in" className="header-link" data-testid="link-sign-in">Sign in <ArrowUpRight size={15} /></Link>}
       </nav>
     </header>
@@ -178,10 +173,91 @@ function CourseCard({ course, selected, onSelect }: { course: Course; selected: 
 function ProgressSteps({ step }: { step: HomeStep }) {
   const steps: HomeStep[] = ['welcome', 'course', 'details', 'questions', 'access'];
   const active = steps.indexOf(step);
+  if (step === 'course') {
+    return <div className="journey-progress course-progress" data-testid="status-progress" aria-label="Step 1 of 4">
+      {[0, 1, 2, 3].map((index) => <span key={index} className={index === 0 ? 'active' : ''} />)}
+      <small>Step 1 of 4</small>
+    </div>;
+  }
   return (
     <div className="journey-progress" data-testid="status-progress">
       {steps.map((item, index) => <span key={item} className={index <= active ? 'active' : ''} />)}
       <small>{step === 'welcome' ? 'A gentle start' : `Step ${active} of ${steps.length - 1}`}</small>
+    </div>
+  );
+}
+
+const landingCourseStyles: Record<CourseId, string> = {
+  'data-analysis': 'landing-course-sky',
+  frontend: 'landing-course-butter',
+  backend: 'landing-course-lilac',
+  cybersecurity: 'landing-course-blossom',
+  'virtual-assistant': 'landing-course-sage',
+};
+
+function SpringLanding({
+  courses,
+  onStart,
+  onApply,
+}: {
+  courses: Course[];
+  onStart: () => void;
+  onApply: (courseId: CourseId) => void;
+}) {
+  return (
+    <div className="spring-landing">
+      <div className="spring-petals" aria-hidden="true"><span /><span /><span /><span /><span /><span /></div>
+      <section className="spring-hero" aria-labelledby="spring-hero-title">
+        <div className="spring-hero-copy">
+          <p className="spring-kicker">Learn a little. Grow a lot.</p>
+          <h1 id="spring-hero-title">Plant a skill. Watch your future <span className="headline-bloom">bloom<svg viewBox="0 0 190 18" aria-hidden="true"><path d="M4 12C49 2 111 3 185 9" /></svg></span>.</h1>
+          <p>Practical, beginner-friendly tech classes with a community ready to help you grow.</p>
+          <div className="spring-hero-actions">
+            <button type="button" className="primary-button" onClick={onStart} data-testid="button-get-started">Start my application <ArrowRight size={19} aria-hidden="true" /></button>
+            <a className="spring-text-link" href="#courses">Explore courses <ArrowRight size={17} aria-hidden="true" /></a>
+          </div>
+        </div>
+        <div className="spring-hero-art">
+          <span className="spring-blob spring-blob-pink" aria-hidden="true" />
+          <span className="spring-blob spring-blob-blue" aria-hidden="true" />
+          <span className="spring-badge"><span aria-hidden="true">🌱</span> Scholarship applications open</span>
+          <img className="landing-photo" src="/hero-nigerian-learners.png" alt="Nigerian learners collaborating around a laptop" />
+          <span className="photo-caption"><Sparkle size={15} weight="fill" aria-hidden="true" /> Learn with people like you</span>
+          <svg className="hero-flower-sticker" viewBox="0 0 88 88" aria-hidden="true">
+            <g fill="#FF9DB8"><ellipse cx="44" cy="18" rx="11" ry="18"/><ellipse cx="44" cy="70" rx="11" ry="18"/><ellipse cx="18" cy="44" rx="18" ry="11"/><ellipse cx="70" cy="44" rx="18" ry="11"/><ellipse cx="26" cy="26" rx="11" ry="18" transform="rotate(-45 26 26)"/><ellipse cx="62" cy="26" rx="11" ry="18" transform="rotate(45 62 26)"/><ellipse cx="26" cy="62" rx="11" ry="18" transform="rotate(45 26 62)"/><ellipse cx="62" cy="62" rx="11" ry="18" transform="rotate(-45 62 62)"/></g>
+            <circle cx="44" cy="44" r="11" fill="#FFD95A"/>
+          </svg>
+        </div>
+      </section>
+
+      <ol className="growth-path" aria-label="Your learning journey">
+        <li><span aria-hidden="true">🌰</span><strong>Apply</strong></li><span className="growth-arrow" aria-hidden="true">→</span>
+        <li><span aria-hidden="true">🌱</span><strong>Learn</strong></li><span className="growth-arrow" aria-hidden="true">→</span>
+        <li><span aria-hidden="true">🌿</span><strong>Practice</strong></li><span className="growth-arrow" aria-hidden="true">→</span>
+        <li><span aria-hidden="true">🌸</span><strong>Get hired</strong></li>
+      </ol>
+
+      <section className="trust-chips" aria-label="Why learn with Tech Pilot">
+        <span>Free to apply</span><span>No tech background needed</span><span>Beginner friendly</span><span>Apply to multiple courses</span>
+      </section>
+
+      <section className="landing-courses" id="courses" aria-labelledby="landing-courses-title">
+        <div className="landing-section-heading">
+          <div><span className="landing-kicker">A good place to begin</span><h2 id="landing-courses-title">Find your kind of <span>growth.</span></h2></div>
+          <p>Choose the skill that feels right. You can apply to more than one.</p>
+        </div>
+        <div className="landing-course-grid">
+          {courses.map((course) => {
+            const { icon: Icon } = courseAccents[course.id];
+            return <article key={course.id} className={`landing-course-card ${landingCourseStyles[course.id]}`}>
+              <div className="landing-course-icon"><Icon size={28} weight="duotone" aria-hidden="true" /></div>
+              <h3>{course.name}</h3>
+              <p>{course.summary}</p>
+              <button type="button" className="landing-apply-link" onClick={() => onApply(course.id)} aria-label={`Apply for ${course.name}`}>Apply <ArrowRight size={16} aria-hidden="true" /></button>
+            </article>;
+          })}
+        </div>
+      </section>
     </div>
   );
 }
@@ -259,6 +335,7 @@ function Home() {
   const previewStep = validSteps.includes(requestedStep as HomeStep) ? requestedStep as HomeStep : 'welcome';
   const [step, setStep] = useState<HomeStep>(previewStep);
   const [selectedIds, setSelectedIds] = useState<CourseId[]>(previewStep === 'details' || previewStep === 'questions' || previewStep === 'access' ? ['frontend'] : []);
+  const [showCourseHelper, setShowCourseHelper] = useState(false);
   const [applicationIndex, setApplicationIndex] = useState(0);
   const [details, setDetails] = useState({ fullName: '', whatsappNumber: '' });
   const [applicationAnswers, setApplicationAnswers] = useState(['', '', '', '']);
@@ -267,6 +344,60 @@ function Home() {
   const courses = Array.isArray(coursesQuery.data) ? coursesQuery.data : fallbackCourses;
   const selectedId = selectedIds[applicationIndex];
   const selectedCourse = courses.find((course) => course.id === selectedId);
+
+  const finishCurrentApplication = (answers: string[]) => {
+    const saved = (JSON.parse(sessionStorage.getItem('tech-pilot-applications') ?? '[]') as Array<{ courseId: CourseId; answers: string[]; selectionReason: string }>).filter((item) => item.courseId !== selectedId);
+    saved.push({ courseId: selectedId!, answers, selectionReason: sessionStorage.getItem('tech-pilot-selection-reason') ?? '' });
+    sessionStorage.setItem('tech-pilot-applications', JSON.stringify(saved));
+    sessionStorage.setItem('tech-pilot-scholarship-answers', JSON.stringify(answers));
+    sessionStorage.setItem('tech-pilot-application-submitted', 'true');
+
+    if (applicationIndex + 1 < selectedIds.length) {
+      setApplicationIndex(applicationIndex + 1);
+      setApplicationAnswers(['', '', '', '']);
+      setActiveQuestion(0);
+      setQuestionsError('');
+      setStep('details');
+    } else {
+      setStep('access');
+    }
+  };
+
+  // Local development shortcut: advances one screen while preparing safe preview state.
+  const skipCurrentScreen = () => {
+    if (step === 'welcome') {
+      setStep('course');
+      return;
+    }
+    if (step === 'course') {
+      if (!selectedIds.length) setSelectedIds(['frontend']);
+      setApplicationIndex(0);
+      setStep('details');
+      return;
+    }
+    if (step === 'details') {
+      const previewDetails = { fullName: 'Dev Preview', whatsappNumber: '08000000000' };
+      setDetails(previewDetails);
+      sessionStorage.setItem('tech-pilot-selection-reason', 'Developer preview application text.');
+      sessionStorage.setItem('tech-pilot-mock-name', previewDetails.fullName);
+      setStep('questions');
+      return;
+    }
+    if (step === 'questions') {
+      finishCurrentApplication([...applicationAnswers]);
+      return;
+    }
+    setLocation('/student-portal');
+  };
+
+  const startApplicationFor = (courseId: CourseId) => {
+    setSelectedIds([courseId]);
+    setApplicationIndex(0);
+    setApplicationAnswers(['', '', '', '']);
+    setActiveQuestion(0);
+    setQuestionsError('');
+    setStep('details');
+  };
 
   useEffect(() => {
     if (isSignedIn) setLocation('/student-portal');
@@ -288,17 +419,10 @@ function Home() {
   };
 
   return (
-    <main className="public-app">
-      <PageHeader />
+    <main className={step === 'welcome' ? 'public-app' : `public-app application-flow${step === 'course' ? ' course-selection-flow' : ''}`}>
+      <PageHeader devSkip={import.meta.env.DEV ? skipCurrentScreen : undefined} />
+      {step === 'welcome' ? <SpringLanding courses={courses} onStart={() => setStep('course')} onApply={startApplicationFor} /> : (
       <div className="home-shell">
-        <aside className="home-aside">
-          <img className="hero-photo" src="/hero-nigerian-learners.png" alt="Black Nigerian learners, from older teens to adults, collaborating around a laptop" />
-          <div className="aside-label"><span className="dot" /> Scholarship-supported tech classes</div>
-          <div className="aside-quote">Build skills.<br /><em>Open doors.</em></div>
-          <p>Practical, beginner-friendly tech classes with a community ready to help you grow.</p>
-          <div className="aside-note"><Sparkle size={16} aria-hidden="true" /><span>Choose one course or explore a few.</span></div>
-          <div className="trust-note"><strong>Learn with people like you</strong><span>Supportive instructors · Beginner friendly · Made for real life</span></div>
-        </aside>
         <section className="journey-panel" aria-live="polite">
           <ProgressSteps step={step} />
           {step === 'welcome' ? (
@@ -317,23 +441,30 @@ function Home() {
           ) : null}
           {step === 'course' ? (
             <div className="journey-content reveal" data-testid="section-course">
-              <span className="eyebrow">Find your starting point · Step 1 of 4</span>
+              <span className="eyebrow">Find your starting point</span>
               <h2>What would you like to learn?</h2>
-              <p className="lead compact">Pick every course that interests you. You’ll complete a focused application for each course, one at a time.</p>
-              <div className="course-list course-photo-list" aria-label="Choose one or more courses">
+              <p className="lead compact">Pick every course that interests you. You'll apply for each one, one at a time.</p>
+              <div className="course-list course-options-grid" role="group" aria-label="Choose one or more courses">
                 {courses.map((course) => {
-                  const photo = coursePhotos[course.id];
                   const selected = selectedIds.includes(course.id);
-                  return <button type="button" key={course.id} className={`course-choice ${selected ? 'is-selected' : ''}`} aria-pressed={selected} onClick={() => setSelectedIds((ids) => selected ? ids.filter((id) => id !== course.id) : [...ids, course.id])}>
-                    <img src={photo} alt="" loading="lazy" />
-                    <span className="course-choice-shade" />
+                  const { icon: Icon } = courseAccents[course.id];
+                  return <button type="button" key={course.id} className={`course-choice course-choice-${course.id} ${selected ? 'is-selected' : ''}`} role="checkbox" aria-checked={selected} onClick={() => setSelectedIds((ids) => selected ? ids.filter((id) => id !== course.id) : [...ids, course.id])}>
+                    <span className="course-choice-icon" aria-hidden="true"><Icon size={22} weight="regular" /></span>
                     <span className="course-choice-copy"><strong>{course.name}</strong><small>{course.summary}</small></span>
-                    <span className="course-choice-check">{selected ? <CheckCircle weight="fill" size={23} /> : <span />}</span>
+                    <span className="course-choice-check" aria-hidden="true">{selected ? <Check weight="bold" size={15} /> : null}</span>
                   </button>;
                 })}
               </div>
-              <p className="selection-count" aria-live="polite">{selectedIds.length ? `${selectedIds.length} course${selectedIds.length === 1 ? '' : 's'} selected · each gets its own application` : 'Select at least one course to continue'}</p>
-              <div className="journey-actions"><button type="button" className="secondary-button" onClick={() => setStep('welcome')} data-testid="button-back-course">Back</button><button type="button" className="primary-button" disabled={!selectedIds.length} onClick={() => { setApplicationIndex(0); setApplicationAnswers(['', '', '', '']); setStep('details'); }} data-testid="button-next-course">Start {selectedIds.length || ''} {selectedIds.length === 1 ? 'application' : 'applications'} <ArrowRight size={18} /></button></div>
+              <div className="course-help-block">
+                <button type="button" className="course-helper-toggle" aria-expanded={showCourseHelper} onClick={() => setShowCourseHelper((open) => !open)}>
+                  <span className="course-helper-icon" aria-hidden="true"><Lightbulb size={20} weight="regular" /></span>
+                  <span className="course-helper-copy"><strong>Need help choosing?</strong><small>See a beginner-friendly recommendation</small></span>
+                  <span className="course-helper-action">{showCourseHelper ? 'Hide guide' : 'Show guide'} <ArrowRight size={15} aria-hidden="true" /></span>
+                </button>
+                {showCourseHelper ? <div className="course-helper" role="status"><Lightbulb size={19} aria-hidden="true" /><p><strong>New to tech?</strong> Frontend Development is a friendly way to learn how websites are made. You can still choose any course that interests you.</p><button type="button" onClick={() => setSelectedIds((ids) => ids.includes('frontend') ? ids : [...ids, 'frontend'])}>{selectedIds.includes('frontend') ? 'Frontend selected' : 'Add Frontend Development'}</button></div> : null}
+              </div>
+              <p className="course-reassurance">Free to apply. You can change your picks later.</p>
+              <div className="journey-actions course-actions"><button type="button" className="secondary-button" onClick={() => setStep('welcome')} data-testid="button-back-course">Back</button><div className="course-action-primary">{!selectedIds.length ? <p className="selection-count" aria-live="polite">Select at least one course to continue</p> : null}<button type="button" className="primary-button" disabled={!selectedIds.length} onClick={() => { setApplicationIndex(0); setApplicationAnswers(['', '', '', '']); setStep('details'); }} data-testid="button-next-course">{selectedIds.length ? `Start ${selectedIds.length} application${selectedIds.length === 1 ? '' : 's'} →` : <><LockKey size={17} aria-hidden="true" /> Select a course to continue</>} </button></div></div>
             </div>
           ) : null}
           {step === 'details' ? (
@@ -360,7 +491,8 @@ function Home() {
               {questionsError ? <p className="form-error" role="alert">{questionsError}</p> : null}
               <div className="journey-actions">
                 {activeQuestion > 0 ? <button type="button" className="secondary-button" onClick={() => { setActiveQuestion(activeQuestion - 1); setQuestionsError(''); }}>Back</button> : <button type="button" className="secondary-button" onClick={() => setStep('details')}>Back</button>}
-                {activeQuestion < scholarshipQuestions.length - 1 ? <button type="button" className="primary-button" disabled={!applicationAnswers[activeQuestion].trim()} onClick={() => { setActiveQuestion(activeQuestion + 1); setQuestionsError(''); }}>Next question <ArrowRight size={18} /></button> : <button type="button" className="primary-button" disabled={!applicationAnswers[activeQuestion].trim()} onClick={() => { const incomplete = applicationAnswers.findIndex((answer) => !answer.trim()); if (incomplete !== -1) { setActiveQuestion(incomplete); setQuestionsError('Please choose or type a short answer to continue.'); return; } const saved = (JSON.parse(sessionStorage.getItem('tech-pilot-applications') ?? '[]') as Array<{courseId: CourseId; answers: string[]; selectionReason: string}>).filter((item) => item.courseId !== selectedId); saved.push({ courseId: selectedId!, answers: [...applicationAnswers], selectionReason: sessionStorage.getItem('tech-pilot-selection-reason') ?? '' }); sessionStorage.setItem('tech-pilot-applications', JSON.stringify(saved)); sessionStorage.setItem('tech-pilot-scholarship-answers', JSON.stringify(applicationAnswers)); sessionStorage.setItem('tech-pilot-application-submitted', 'true'); if (applicationIndex + 1 < selectedIds.length) { setApplicationIndex(applicationIndex + 1); setApplicationAnswers(['', '', '', '']); setActiveQuestion(0); setQuestionsError(''); setStep('details'); } else { setStep('access'); } }} data-testid="button-submit-application">{applicationIndex + 1 < selectedIds.length ? 'Save and apply for next course' : 'Submit application'} <ArrowRight size={18} /></button>}
+                <button type="button" className="skip-form-button" onClick={() => finishCurrentApplication([...applicationAnswers])} data-testid="button-skip-questions">Skip questions</button>
+                {activeQuestion < scholarshipQuestions.length - 1 ? <button type="button" className="primary-button" disabled={!applicationAnswers[activeQuestion].trim()} onClick={() => { setActiveQuestion(activeQuestion + 1); setQuestionsError(''); }}>Next question <ArrowRight size={18} /></button> : <button type="button" className="primary-button" disabled={!applicationAnswers[activeQuestion].trim()} onClick={() => { const incomplete = applicationAnswers.findIndex((answer) => !answer.trim()); if (incomplete !== -1) { setActiveQuestion(incomplete); setQuestionsError('Please choose or type a short answer to continue.'); return; } finishCurrentApplication([...applicationAnswers]); }} data-testid="button-submit-application">{applicationIndex + 1 < selectedIds.length ? 'Save and apply for next course' : 'Submit application'} <ArrowRight size={18} /></button>}
               </div>
             </div>
           ) : null}
@@ -377,6 +509,7 @@ function Home() {
           ) : null}
         </section>
       </div>
+      )}
       <footer className="site-footer"><span>Tech Pilot Classes · Built for beginners in Nigeria</span><span>Learn a little. Build a lot.</span></footer>
     </main>
   );
@@ -585,15 +718,19 @@ function StudentPortal() {
         {activePortalTab === 'announcements' ? <section id="announcements" className="portal-card dashboard-panel" data-testid="section-announcements"><span className="eyebrow">From your class team</span><h2>Announcements</h2><article className="announcement-item"><div className="announcement-icon"><Bell size={19} /></div><div><span className="announcement-date">October 1, 2026 · Frontend Development</span><h3>Welcome to your learning space</h3><p>Your class schedule and live classroom link will appear here as soon as your instructor shares them.</p></div></article></section> : null}
         {activePortalTab === 'overview' && enrollment && course ? (
           <div className="bento-grid" data-testid="section-portal-bento">
-            {dashboardCourses.map((courseItem) => <section className="portal-card bento-tile bento-course reveal" key={courseItem.id} data-testid={`section-enrolled-course-${courseItem.id}`}>
-              <div className="portal-card-top"><div><span className="status-pill"><span /> Scholarship learner</span><h2>{courseItem.name}</h2><p>{courseItem.summary}</p></div><span className="course-icon large">{courseAccents[courseItem.id] ? (() => { const Icon = courseAccents[courseItem.id].icon; return <Icon size={25} />; })() : <Code size={25} />}</span></div>
-              <CourseInfo course={courseItem} />
-              {courseItem.classLink ? <a className="primary-button join-class" href={courseItem.classLink} target="_blank" rel="noreferrer">Join {courseItem.name} class <ArrowUpRight size={16} aria-hidden="true" /></a> : <span className="join-class-wrap" title="Available when your class is scheduled"><button className="primary-button join-class" type="button" disabled aria-describedby={`join-class-help-${courseItem.id}`}>Join {courseItem.name} class <LockKey size={16} aria-hidden="true" /></button><span id={`join-class-help-${courseItem.id}`} className="sr-only">Available when your class is scheduled.</span></span>}
-            </section>)}
-            <section className="bento-tile bento-next"><div className="bento-tile-head"><span className="info-icon"><CalendarBlank size={19} /></span><span className="eyebrow">UP NEXT</span></div><h3>No class scheduled yet.</h3><p>We’ll notify you when it’s set.</p><StatusChip /></section>
-            <NextSteps onTab={setActivePortalTab} hasWhatsapp={true} hasSchedule={Boolean(primaryDashboardCourse.schedule && primaryDashboardCourse.schedule.toLowerCase() !== 'to be decided')} whatsappHref={communityWhatsappHref} />
-            <section className="bento-tile bento-links" data-testid="section-learning-links"><div className="bento-tile-head"><span className="info-icon"><VideoCamera size={19} /></span><span className="eyebrow">YOUR LEARNING</span></div><h3>Course links</h3><div className="bento-link-row"><span>Live classroom</span>{course.classLink ? <a href={course.classLink} target="_blank" rel="noreferrer">Open <ArrowUpRight size={13} /></a> : <StatusChip />}</div><div className="bento-link-row"><span>Course resources</span><StatusChip /></div></section>
-            <AnnouncementPreview title="Welcome to your learning space" date="October 1, 2026" unread={announcementUnread} onRead={() => { setAnnouncementUnread(false); setActivePortalTab('announcements'); }} />
+            <div className="portal-main-column">
+              {dashboardCourses.map((courseItem) => <section className="portal-card bento-tile bento-course reveal" key={courseItem.id} data-testid={`section-enrolled-course-${courseItem.id}`}>
+                <div className="portal-card-top"><div><span className="status-pill"><span /> Scholarship learner</span><h2>{courseItem.name}</h2><p>{courseItem.summary}</p></div><span className="course-icon large">{courseAccents[courseItem.id] ? (() => { const Icon = courseAccents[courseItem.id].icon; return <Icon size={25} />; })() : <Code size={25} />}</span></div>
+                <CourseInfo course={courseItem} />
+                {courseItem.classLink ? <a className="primary-button join-class" href={courseItem.classLink} target="_blank" rel="noreferrer">Join {courseItem.name} class <ArrowUpRight size={16} aria-hidden="true" /></a> : <span className="join-class-wrap" title="Available when your class is scheduled"><button className="primary-button join-class" type="button" disabled aria-describedby={`join-class-help-${courseItem.id}`}>Join {courseItem.name} class <LockKey size={16} aria-hidden="true" /></button><span id={`join-class-help-${courseItem.id}`} className="sr-only">Available when your class is scheduled.</span></span>}
+              </section>)}
+              <NextSteps onTab={setActivePortalTab} hasWhatsapp={true} hasSchedule={Boolean(primaryDashboardCourse.schedule && primaryDashboardCourse.schedule.toLowerCase() !== 'to be decided')} whatsappHref={communityWhatsappHref} />
+            </div>
+            <aside className="portal-support-column" aria-label="Learning updates and links">
+              <section className="bento-tile bento-next"><div className="bento-tile-head"><span className="info-icon"><CalendarBlank size={19} /></span><span className="eyebrow">UP NEXT</span></div><h3>No class scheduled yet.</h3><p>We’ll notify you when it’s set.</p><StatusChip /></section>
+              <AnnouncementPreview title="Welcome to your learning space" date="October 1, 2026" unread={announcementUnread} onRead={() => { setAnnouncementUnread(false); setActivePortalTab('announcements'); }} />
+              <section className="bento-tile bento-links" data-testid="section-learning-links"><div className="bento-tile-head"><span className="info-icon"><VideoCamera size={19} /></span><span className="eyebrow">YOUR LEARNING</span></div><h3>Course links</h3><div className="bento-link-row"><span>Live classroom</span>{course.classLink ? <a href={course.classLink} target="_blank" rel="noreferrer">Open <ArrowUpRight size={13} /></a> : <StatusChip />}</div><div className="bento-link-row"><span>Course resources</span><StatusChip /></div></section>
+            </aside>
           </div>
         ) : activePortalTab === 'overview' ? (
           <section className="portal-card empty-portal reveal" data-testid="section-no-enrollment">
